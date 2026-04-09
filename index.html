@@ -1,10 +1,12 @@
 <!DOCTYPE html>
+
 <html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Suzuki Thank You Letter Generator</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -506,12 +508,14 @@
 
   #letter-canvas { animation: fadeIn 0.6s ease forwards; }
 </style>
+
 </head>
 <body>
 
 <div class="app-shell">
 
   <!-- SIDEBAR CONTROLS -->
+
   <aside class="sidebar">
     <div class="sidebar-brand">
       <div class="logo-mark">
@@ -525,56 +529,60 @@
       <p>Thank You Letter Generator</p>
     </div>
 
-    <div class="field-group">
-      <label>Nama Konsumen</label>
-      <input type="text" id="inp-name" value="Bapak/Ibu Ahmad Santoso" placeholder="Nama lengkap konsumen" oninput="updateLetter()">
-    </div>
+```
+<div class="field-group">
+  <label>Nama Konsumen</label>
+  <input type="text" id="inp-name" value="Bapak/Ibu Ahmad Santoso" placeholder="Nama lengkap konsumen" oninput="updateLetter()">
+</div>
 
-    <div class="field-group">
-      <label>Tanggal Serah Terima</label>
-      <input type="date" id="inp-date" oninput="updateLetter()">
-    </div>
+<div class="field-group">
+  <label>Tanggal Serah Terima</label>
+  <input type="date" id="inp-date" oninput="updateLetter()">
+</div>
 
-    <div class="divider"></div>
+<div class="divider"></div>
 
-    <div class="field-group">
-      <label>Unit / Model Kendaraan</label>
-      <select id="inp-unit" onchange="updateLetter()">
-        <option value="Suzuki Ertiga">Suzuki Ertiga</option>
-        <option value="Suzuki XL7">Suzuki XL7</option>
-        <option value="Suzuki Baleno">Suzuki Baleno</option>
-        <option value="Suzuki Swift">Suzuki Swift</option>
-        <option value="Suzuki Ignis">Suzuki Ignis</option>
-        <option value="Suzuki Jimny">Suzuki Jimny</option>
-        <option value="Suzuki Fronx">Suzuki Fronx</option>
-        <option value="Suzuki Grand Vitara">Suzuki Grand Vitara</option>
-        <option value="Suzuki Carry">Suzuki Carry</option>
-        <option value="Suzuki APV">Suzuki APV</option>
-      </select>
-    </div>
+<div class="field-group">
+  <label>Unit / Model Kendaraan</label>
+  <select id="inp-unit" onchange="updateLetter()">
+    <option value="Suzuki Ertiga">Suzuki Ertiga</option>
+    <option value="Suzuki XL7">Suzuki XL7</option>
+    <option value="Suzuki Baleno">Suzuki Baleno</option>
+    <option value="Suzuki Swift">Suzuki Swift</option>
+    <option value="Suzuki Ignis">Suzuki Ignis</option>
+    <option value="Suzuki Jimny">Suzuki Jimny</option>
+    <option value="Suzuki Fronx">Suzuki Fronx</option>
+    <option value="Suzuki Grand Vitara">Suzuki Grand Vitara</option>
+    <option value="Suzuki Carry">Suzuki Carry</option>
+    <option value="Suzuki APV">Suzuki APV</option>
+  </select>
+</div>
 
-    <div class="field-group">
-      <label>Tipe / Varian</label>
-      <input type="text" id="inp-type" value="GL Manual" placeholder="Contoh: GL AT, GX, Sport..." oninput="updateLetter()">
-    </div>
+<div class="field-group">
+  <label>Tipe / Varian</label>
+  <input type="text" id="inp-type" value="GL Manual" placeholder="Contoh: GL AT, GX, Sport..." oninput="updateLetter()">
+</div>
 
-    <div class="divider"></div>
+<div class="divider"></div>
 
-    <div class="field-group">
-      <label>Nama Wiraniaga (Sales)</label>
-      <input type="text" id="inp-sales" value="Yusuf" placeholder="Nama sales executive..." oninput="updateLetter()">
-    </div>
+<div class="field-group">
+  <label>Nama Wiraniaga (Sales)</label>
+  <input type="text" id="inp-sales" value="Yusuf" placeholder="Nama sales executive..." oninput="updateLetter()">
+</div>
 
-    <div class="divider"></div>
+<div class="divider"></div>
 
-    <button class="btn-download" onclick="downloadPDF()">
-      ↓ &nbsp; Unduh sebagai PDF
-    </button>
+<button class="btn-download" onclick="downloadPDF()">
+  ↓ &nbsp; Unduh sebagai PDF
+</button>
 
-    <p class="hint-text">Isi data di atas untuk memperbarui<br>preview surat secara langsung</p>
+<p class="hint-text">Isi data di atas untuk memperbarui<br>preview surat secara langsung</p>
+```
+
   </aside>
 
   <!-- PREVIEW -->
+
   <main class="preview-area">
     <div id="letter-canvas">
       <!-- Decorative elements -->
@@ -585,99 +593,102 @@
       <div class="corner corner-bl"></div>
       <div class="corner corner-br"></div>
 
-      <!-- HEADER -->
-      <header class="letter-header">
-        <div class="brand-name">Suzuki Authorized Dealer — <span id="disp-sales-header">Yusuf</span></div>
-        <div class="header-ornament">
-          <div class="ornament-line"></div>
-          <div class="ornament-diamond"></div>
-          <div class="ornament-line right"></div>
+```
+  <!-- HEADER -->
+  <header class="letter-header">
+    <div class="brand-name">Suzuki Authorized Dealer — <span id="disp-sales-header">Yusuf</span></div>
+    <div class="header-ornament">
+      <div class="ornament-line"></div>
+      <div class="ornament-diamond"></div>
+      <div class="ornament-line right"></div>
+    </div>
+    <div class="letter-title">Thank You</div>
+    <div class="letter-subtitle">Surat Apresiasi Pelanggan</div>
+    <div class="header-divider">
+      <div class="divider-line"></div>
+      <div class="divider-ornament">
+        <div class="dot"></div>
+        <div class="dot-lg"></div>
+        <div class="dot"></div>
+      </div>
+      <div class="divider-line"></div>
+    </div>
+  </header>
+
+  <!-- BODY -->
+  <div class="letter-body">
+    <div class="letter-date" id="disp-date">— 9 April 2026 —</div>
+
+    <div class="salutation">Kepada Yang Terhormat,<br>
+      <span id="disp-name" style="font-size:18px; color:#e8c84a;">Bapak/Ibu Ahmad Santoso</span>
+    </div>
+
+    <p class="letter-text">
+      Dengan penuh rasa syukur dan kebanggaan, kami mengucapkan terima kasih yang sebesar-besarnya atas kepercayaan Anda memilih <strong>Suzuki</strong> sebagai kendaraan impian Anda. Kepercayaan Anda adalah kehormatan tertinggi bagi kami.
+    </p>
+
+    <div class="car-info-box">
+      <span class="car-info-label">Detail Kendaraan</span>
+      <div class="car-info-grid">
+        <div class="car-info-item">
+          <span class="ci-label">Unit Kendaraan</span>
+          <span class="ci-value" id="disp-unit">Suzuki Ertiga</span>
         </div>
-        <div class="letter-title">Thank You</div>
-        <div class="letter-subtitle">Surat Apresiasi Pelanggan</div>
-        <div class="header-divider">
-          <div class="divider-line"></div>
-          <div class="divider-ornament">
-            <div class="dot"></div>
-            <div class="dot-lg"></div>
-            <div class="dot"></div>
-          </div>
-          <div class="divider-line"></div>
+        <div class="car-info-item">
+          <span class="ci-label">Tipe / Varian</span>
+          <span class="ci-value" id="disp-type">GL Manual</span>
         </div>
-      </header>
-
-      <!-- BODY -->
-      <div class="letter-body">
-        <div class="letter-date" id="disp-date">— 9 April 2026 —</div>
-
-        <div class="salutation">Kepada Yang Terhormat,<br>
-          <span id="disp-name" style="font-size:18px; color:#e8c84a;">Bapak/Ibu Ahmad Santoso</span>
+        <div class="car-info-item">
+          <span class="ci-label">Tanggal Serah Terima</span>
+          <span class="ci-value" id="disp-date2">9 April 2026</span>
         </div>
-
-        <p class="letter-text">
-          Dengan penuh rasa syukur dan kebanggaan, kami mengucapkan terima kasih yang sebesar-besarnya atas kepercayaan Anda memilih <strong>Suzuki</strong> sebagai kendaraan impian Anda. Kepercayaan Anda adalah kehormatan tertinggi bagi kami.
-        </p>
-
-        <div class="car-info-box">
-          <span class="car-info-label">Detail Kendaraan</span>
-          <div class="car-info-grid">
-            <div class="car-info-item">
-              <span class="ci-label">Unit Kendaraan</span>
-              <span class="ci-value" id="disp-unit">Suzuki Ertiga</span>
-            </div>
-            <div class="car-info-item">
-              <span class="ci-label">Tipe / Varian</span>
-              <span class="ci-value" id="disp-type">GL Manual</span>
-            </div>
-            <div class="car-info-item">
-              <span class="ci-label">Tanggal Serah Terima</span>
-              <span class="ci-value" id="disp-date2">9 April 2026</span>
-            </div>
-            <div class="car-info-item">
-              <span class="ci-label">Sales Executive</span>
-              <span class="ci-value" id="disp-sales-info">Yusuf</span>
-            </div>
-          </div>
-        </div>
-
-        <p class="letter-text">
-          Kami berharap kendaraan <strong id="disp-unit-inline">Suzuki Ertiga</strong> yang Anda miliki dapat menemani setiap perjalanan Anda dengan penuh kenyamanan, keandalan, dan kebanggaan. Setiap kilometer yang Anda tempuh adalah bukti dari standar kualitas Suzuki yang telah kami jaga dengan sepenuh hati.
-        </p>
-
-        <p class="letter-text">
-          Jangan ragu untuk menghubungi kami kapanpun Anda membutuhkan layanan purna jual, perawatan berkala, maupun informasi lebih lanjut. Kami selalu siap memberikan pelayanan terbaik yang Anda layak dapatkan.
-        </p>
-
-        <div class="signature-block">
-          <div class="sig-left">
-            <p class="closing-text">"Terima kasih telah menjadi bagian dari keluarga besar Suzuki.<br>Semoga perjalanan Anda selalu menyenangkan."</p>
-            <p class="sig-closing">Hormat Kami,</p>
-            <p class="sig-name" id="disp-sales-sig">Yusuf</p>
-            <p class="sig-title">Sales Executive — Suzuki Authorized Dealer</p>
-          </div>
-          <div class="sig-right">
-            <div class="seal-ring">
-              <div class="seal-text">SUZUKI<br>⬥<br>AUTHORIZED<br>DEALER<br>⬥<br><span id="disp-sales-seal">YUSUF</span></div>
-            </div>
-          </div>
+        <div class="car-info-item">
+          <span class="ci-label">Sales Executive</span>
+          <span class="ci-value" id="disp-sales-info">Yusuf</span>
         </div>
       </div>
-
-      <!-- FOOTER -->
-      <footer class="letter-footer">
-        <div class="footer-ornament">
-          <div class="divider-line"></div>
-          <div class="divider-ornament">
-            <div class="dot"></div>
-            <div class="dot-lg"></div>
-            <div class="dot"></div>
-          </div>
-          <div class="divider-line"></div>
-        </div>
-        <div class="footer-text">Suzuki — Way of Life &nbsp;⬥&nbsp; Dealer Resmi <span id="disp-sales-footer">Yusuf</span></div>
-      </footer>
-
     </div>
+
+    <p class="letter-text">
+      Kami berharap kendaraan <strong id="disp-unit-inline">Suzuki Ertiga</strong> yang Anda miliki dapat menemani setiap perjalanan Anda dengan penuh kenyamanan, keandalan, dan kebanggaan. Setiap kilometer yang Anda tempuh adalah bukti dari standar kualitas Suzuki yang telah kami jaga dengan sepenuh hati.
+    </p>
+
+    <p class="letter-text">
+      Jangan ragu untuk menghubungi kami kapanpun Anda membutuhkan layanan purna jual, perawatan berkala, maupun informasi lebih lanjut. Kami selalu siap memberikan pelayanan terbaik yang Anda layak dapatkan.
+    </p>
+
+    <div class="signature-block">
+      <div class="sig-left">
+        <p class="closing-text">"Terima kasih telah menjadi bagian dari keluarga besar Suzuki.<br>Semoga perjalanan Anda selalu menyenangkan."</p>
+        <p class="sig-closing">Hormat Kami,</p>
+        <p class="sig-name" id="disp-sales-sig">Yusuf</p>
+        <p class="sig-title">Sales Executive — Suzuki Authorized Dealer</p>
+      </div>
+      <div class="sig-right">
+        <div class="seal-ring">
+          <div class="seal-text">SUZUKI<br>⬥<br>AUTHORIZED<br>DEALER<br>⬥<br><span id="disp-sales-seal">YUSUF</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="letter-footer">
+    <div class="footer-ornament">
+      <div class="divider-line"></div>
+      <div class="divider-ornament">
+        <div class="dot"></div>
+        <div class="dot-lg"></div>
+        <div class="dot"></div>
+      </div>
+      <div class="divider-line"></div>
+    </div>
+    <div class="footer-text">Suzuki — Way of Life &nbsp;⬥&nbsp; Dealer Resmi <span id="disp-sales-footer">Yusuf</span></div>
+  </footer>
+
+</div>
+```
+
   </main>
 </div>
 
@@ -716,8 +727,35 @@
   }
 
   function downloadPDF() {
-    window.print();
+    const btn = document.querySelector('.btn-download');
+    btn.textContent = '⏳  Menyiapkan PDF...';
+    btn.disabled = true;
+
+    const element = document.getElementById('letter-canvas');
+    const sales = document.getElementById('inp-sales').value || 'Sales';
+    const name = document.getElementById('inp-name').value || 'Konsumen';
+    const filename = `Suzuki-ThankYou-${name.replace(/\s+/g, '_')}.pdf`;
+
+    const opt = {
+      margin: 0,
+      filename: filename,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#0a0a0a',
+        width: 794,
+        windowWidth: 794
+      },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opt).from(element).save().then(() => {
+      btn.innerHTML = '↓ &nbsp; Unduh sebagai PDF';
+      btn.disabled = false;
+    });
   }
 </script>
+
 </body>
 </html>
