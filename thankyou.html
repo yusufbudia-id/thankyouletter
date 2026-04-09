@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suzuki Thank You Letter Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0d0d0d;
+    font-family: 'Cormorant Garamond', serif;
+    min-height: 100vh;
+    color: #d4af37;
+  }
+
+  .app-shell {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    min-height: 100vh;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    background: #111111;
+    border-right: 1px solid #2a2200;
+    padding: 2.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .sidebar-brand {
+    text-align: center;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #2a2200;
+  }
+
+  .sidebar-brand .logo-mark {
+    width: 52px;
+    height: 52px;
+    margin: 0 auto 1rem;
+    border: 1.5px solid #d4af37;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sidebar-brand .logo-mark svg { width: 28px; height: 28px; }
+
+  .sidebar-brand h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    letter-spacing: 0.25em;
+    color: #d4af37;
+    font-weight: 400;
+    text-transform: uppercase;
+  }
+
+  .sidebar-brand p {
+    font-size: 11px;
+    color: #5a4a1a;
+    letter-spacing: 0.1em;
+    margin-top: 4px;
+  }
+
+  .field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .field-group label {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: #7a6020;
+    text-transform: uppercase;
+  }
+
+  .field-group input,
+  .field-group select {
+    background: #0d0d0d;
+    border: 1px solid #2a2200;
+    color: #e8c84a;
+    padding: 10px 14px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    outline: none;
+    border-radius: 3px;
+    width: 100%;
+    transition: border-color 0.2s;
+  }
+
+  .field-group input:focus,
+  .field-group select:focus {
+    border-color: #d4af37;
+  }
+
+  .field-group input[type="date"] {
+    color-scheme: dark;
+  }
+
+  .field-group select option {
+    background: #111;
+    color: #e8c84a;
+  }
+
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #2a2200, transparent);
+  }
+
+  .btn-download {
+    margin-top: auto;
+    background: linear-gradient(135deg, #b8960c, #d4af37, #b8960c);
+    color: #0d0d0d;
+    border: none;
+    padding: 14px;
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+
+  .btn-download:hover { opacity: 0.9; }
+  .btn-download:active { transform: scale(0.98); }
+
+  .hint-text {
+    font-size: 11px;
+    color: #3a3010;
+    text-align: center;
+    line-height: 1.6;
+  }
+
+  /* PREVIEW AREA */
+  .preview-area {
+    background: #1a1a1a;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 3rem 2rem;
+    overflow-y: auto;
+  }
+
+  /* A4 LETTER */
+  #letter-canvas {
+    width: 794px;
+    min-height: 1123px;
+    background: #0a0a0a;
+    position: relative;
+    padding: 70px 80px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 80px rgba(0,0,0,0.8), 0 0 0 1px #2a2000;
+    overflow: hidden;
+  }
+
+  /* Corner ornaments */
+  .corner {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+  }
+  .corner-tl { top: 24px; left: 24px; border-top: 1.5px solid #d4af37; border-left: 1.5px solid #d4af37; }
+  .corner-tr { top: 24px; right: 24px; border-top: 1.5px solid #d4af37; border-right: 1.5px solid #d4af37; }
+  .corner-bl { bottom: 24px; left: 24px; border-bottom: 1.5px solid #d4af37; border-left: 1.5px solid #d4af37; }
+  .corner-br { bottom: 24px; right: 24px; border-bottom: 1.5px solid #d4af37; border-right: 1.5px solid #d4af37; }
+
+  /* Inner border line */
+  .inner-border {
+    position: absolute;
+    inset: 16px;
+    border: 0.5px solid #2a2000;
+    pointer-events: none;
+  }
+
+  /* Background watermark pattern */
+  .bg-pattern {
+    position: absolute;
+    inset: 0;
+    opacity: 0.025;
+    background-image:
+      repeating-linear-gradient(45deg, #d4af37 0px, #d4af37 1px, transparent 1px, transparent 40px),
+      repeating-linear-gradient(-45deg, #d4af37 0px, #d4af37 1px, transparent 1px, transparent 40px);
+    pointer-events: none;
+  }
+
+  /* Letter header */
+  .letter-header {
+    text-align: center;
+    margin-bottom: 40px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .header-ornament {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .ornament-line {
+    flex: 1;
+    height: 0.5px;
+    background: linear-gradient(90deg, transparent, #d4af37);
+  }
+
+  .ornament-line.right {
+    background: linear-gradient(90deg, #d4af37, transparent);
+  }
+
+  .ornament-diamond {
+    width: 8px;
+    height: 8px;
+    background: #d4af37;
+    transform: rotate(45deg);
+    flex-shrink: 0;
+  }
+
+  .brand-name {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    color: #7a6020;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .letter-title {
+    font-family: 'Cinzel', serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: #d4af37;
+    letter-spacing: 0.15em;
+    margin-bottom: 6px;
+    line-height: 1.2;
+  }
+
+  .letter-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    letter-spacing: 0.3em;
+    color: #5a4a1a;
+    text-transform: uppercase;
+  }
+
+  .header-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 20px;
+  }
+
+  .divider-line {
+    flex: 1;
+    height: 0.5px;
+    background: #2a2000;
+  }
+
+  .divider-ornament {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .dot { width: 3px; height: 3px; background: #d4af37; border-radius: 50%; }
+  .dot-lg { width: 5px; height: 5px; background: #d4af37; transform: rotate(45deg); }
+
+  /* Letter body */
+  .letter-body {
+    flex: 1;
+    position: relative;
+    z-index: 1;
+  }
+
+  .letter-date {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    color: #7a6020;
+    letter-spacing: 0.1em;
+    margin-bottom: 32px;
+    font-style: italic;
+  }
+
+  .salutation {
+    font-family: 'Cinzel', serif;
+    font-size: 15px;
+    color: #d4af37;
+    letter-spacing: 0.1em;
+    margin-bottom: 28px;
+  }
+
+  .letter-text {
+    font-family: 'EB Garamond', serif;
+    font-size: 16px;
+    color: #c8a830;
+    line-height: 2;
+    margin-bottom: 20px;
+    text-align: justify;
+  }
+
+  .letter-text strong {
+    color: #e8c84a;
+    font-weight: 400;
+    font-style: italic;
+  }
+
+  /* Car info box */
+  .car-info-box {
+    margin: 32px 0;
+    border: 0.5px solid #3a2e00;
+    padding: 24px 32px;
+    position: relative;
+    background: rgba(212, 175, 55, 0.03);
+  }
+
+  .car-info-box::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: 40px;
+    width: 60px; height: 1px;
+    background: #0a0a0a;
+  }
+
+  .car-info-label {
+    position: absolute;
+    top: -9px; left: 36px;
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    color: #7a6020;
+    background: #0a0a0a;
+    padding: 0 8px;
+    text-transform: uppercase;
+  }
+
+  .car-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 32px;
+  }
+
+  .car-info-item { display: flex; flex-direction: column; gap: 4px; }
+  .car-info-item .ci-label {
+    font-family: 'Cinzel', serif;
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    color: #4a3a10;
+    text-transform: uppercase;
+  }
+
+  .car-info-item .ci-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    color: #d4af37;
+    letter-spacing: 0.05em;
+  }
+
+  /* Signature */
+  .signature-block {
+    margin-top: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  .sig-left { max-width: 60%; }
+
+  .closing-text {
+    font-family: 'EB Garamond', serif;
+    font-size: 15px;
+    color: #c8a830;
+    line-height: 1.8;
+    margin-bottom: 40px;
+    font-style: italic;
+  }
+
+  .sig-closing {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14px;
+    color: #7a6020;
+    letter-spacing: 0.1em;
+    margin-bottom: 48px;
+  }
+
+  .sig-name {
+    font-family: 'Cinzel', serif;
+    font-size: 16px;
+    color: #d4af37;
+    letter-spacing: 0.1em;
+    border-top: 0.5px solid #3a2e00;
+    padding-top: 10px;
+  }
+
+  .sig-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 12px;
+    color: #5a4a1a;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  .sig-right {
+    text-align: right;
+  }
+
+  .seal-ring {
+    width: 90px;
+    height: 90px;
+    border: 1.5px solid #3a2e00;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin-left: auto;
+  }
+
+  .seal-ring::after {
+    content: '';
+    position: absolute;
+    inset: 5px;
+    border: 0.5px solid #2a2000;
+    border-radius: 50%;
+  }
+
+  .seal-text {
+    font-family: 'Cinzel', serif;
+    font-size: 7px;
+    color: #4a3a10;
+    text-align: center;
+    letter-spacing: 0.1em;
+    line-height: 1.4;
+    z-index: 1;
+  }
+
+  /* Footer */
+  .letter-footer {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    padding-top: 32px;
+  }
+
+  .footer-ornament {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .footer-text {
+    font-family: 'Cinzel', serif;
+    font-size: 8px;
+    letter-spacing: 0.3em;
+    color: #3a2e00;
+    text-transform: uppercase;
+  }
+
+  @media print {
+    @page { size: A4 portrait; margin: 0; }
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    html, body { margin: 0; padding: 0; background: #0a0a0a !important; height: 297mm !important; overflow: hidden !important; }
+    .app-shell { display: block !important; }
+    .sidebar { display: none !important; }
+    .preview-area { padding: 0 !important; background: #0a0a0a !important; display: block !important; height: 297mm !important; overflow: hidden !important; }
+    #letter-canvas {
+      width: 210mm !important;
+      height: 297mm !important;
+      min-height: unset !important;
+      max-height: 297mm !important;
+      box-shadow: none !important;
+      margin: 0 !important;
+      animation: none !important;
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+      overflow: hidden !important;
+      padding: 50px 70px !important;
+    }
+    .letter-body { flex: 1; }
+    .letter-text { font-size: 13.5px !important; margin-bottom: 12px !important; }
+    .car-info-box { padding: 14px 18px !important; margin: 14px 0 !important; }
+    .letter-header { margin-bottom: 24px !important; }
+    .signature-block { margin-top: 16px !important; }
+    .letter-footer { padding-top: 16px !important; }
+    .salutation { margin-bottom: 12px !important; }
+    .letter-date { margin-bottom: 12px !important; }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  #letter-canvas { animation: fadeIn 0.6s ease forwards; }
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- SIDEBAR CONTROLS -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="logo-mark">
+        <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M14 2L26 8V20L14 26L2 20V8L14 2Z" stroke="#d4af37" stroke-width="1" fill="none"/>
+          <path d="M14 6L22 10V18L14 22L6 18V10L14 6Z" fill="#d4af37" fill-opacity="0.15"/>
+          <text x="14" y="17" text-anchor="middle" fill="#d4af37" font-size="8" font-family="Cinzel">S</text>
+        </svg>
+      </div>
+      <h1>Suzuki Prestige</h1>
+      <p>Thank You Letter Generator</p>
+    </div>
+
+    <div class="field-group">
+      <label>Nama Konsumen</label>
+      <input type="text" id="inp-name" value="Bapak/Ibu Ahmad Santoso" placeholder="Nama lengkap konsumen" oninput="updateLetter()">
+    </div>
+
+    <div class="field-group">
+      <label>Tanggal Serah Terima</label>
+      <input type="date" id="inp-date" oninput="updateLetter()">
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="field-group">
+      <label>Unit / Model Kendaraan</label>
+      <select id="inp-unit" onchange="updateLetter()">
+        <option value="Suzuki Ertiga">Suzuki Ertiga</option>
+        <option value="Suzuki XL7">Suzuki XL7</option>
+        <option value="Suzuki Baleno">Suzuki Baleno</option>
+        <option value="Suzuki Swift">Suzuki Swift</option>
+        <option value="Suzuki Ignis">Suzuki Ignis</option>
+        <option value="Suzuki Jimny">Suzuki Jimny</option>
+        <option value="Suzuki Fronx">Suzuki Fronx</option>
+        <option value="Suzuki Grand Vitara">Suzuki Grand Vitara</option>
+        <option value="Suzuki Carry">Suzuki Carry</option>
+        <option value="Suzuki APV">Suzuki APV</option>
+      </select>
+    </div>
+
+    <div class="field-group">
+      <label>Tipe / Varian</label>
+      <input type="text" id="inp-type" value="GL Manual" placeholder="Contoh: GL AT, GX, Sport..." oninput="updateLetter()">
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="field-group">
+      <label>Nama Wiraniaga (Sales)</label>
+      <input type="text" id="inp-sales" value="Yusuf" placeholder="Nama sales executive..." oninput="updateLetter()">
+    </div>
+
+    <div class="divider"></div>
+
+    <button class="btn-download" onclick="downloadPDF()">
+      ↓ &nbsp; Unduh sebagai PDF
+    </button>
+
+    <p class="hint-text">Isi data di atas untuk memperbarui<br>preview surat secara langsung</p>
+  </aside>
+
+  <!-- PREVIEW -->
+  <main class="preview-area">
+    <div id="letter-canvas">
+      <!-- Decorative elements -->
+      <div class="bg-pattern"></div>
+      <div class="inner-border"></div>
+      <div class="corner corner-tl"></div>
+      <div class="corner corner-tr"></div>
+      <div class="corner corner-bl"></div>
+      <div class="corner corner-br"></div>
+
+      <!-- HEADER -->
+      <header class="letter-header">
+        <div class="brand-name">Suzuki Authorized Dealer — <span id="disp-sales-header">Yusuf</span></div>
+        <div class="header-ornament">
+          <div class="ornament-line"></div>
+          <div class="ornament-diamond"></div>
+          <div class="ornament-line right"></div>
+        </div>
+        <div class="letter-title">Thank You</div>
+        <div class="letter-subtitle">Surat Apresiasi Pelanggan</div>
+        <div class="header-divider">
+          <div class="divider-line"></div>
+          <div class="divider-ornament">
+            <div class="dot"></div>
+            <div class="dot-lg"></div>
+            <div class="dot"></div>
+          </div>
+          <div class="divider-line"></div>
+        </div>
+      </header>
+
+      <!-- BODY -->
+      <div class="letter-body">
+        <div class="letter-date" id="disp-date">— 9 April 2026 —</div>
+
+        <div class="salutation">Kepada Yang Terhormat,<br>
+          <span id="disp-name" style="font-size:18px; color:#e8c84a;">Bapak/Ibu Ahmad Santoso</span>
+        </div>
+
+        <p class="letter-text">
+          Dengan penuh rasa syukur dan kebanggaan, kami mengucapkan terima kasih yang sebesar-besarnya atas kepercayaan Anda memilih <strong>Suzuki</strong> sebagai kendaraan impian Anda. Kepercayaan Anda adalah kehormatan tertinggi bagi kami.
+        </p>
+
+        <div class="car-info-box">
+          <span class="car-info-label">Detail Kendaraan</span>
+          <div class="car-info-grid">
+            <div class="car-info-item">
+              <span class="ci-label">Unit Kendaraan</span>
+              <span class="ci-value" id="disp-unit">Suzuki Ertiga</span>
+            </div>
+            <div class="car-info-item">
+              <span class="ci-label">Tipe / Varian</span>
+              <span class="ci-value" id="disp-type">GL Manual</span>
+            </div>
+            <div class="car-info-item">
+              <span class="ci-label">Tanggal Serah Terima</span>
+              <span class="ci-value" id="disp-date2">9 April 2026</span>
+            </div>
+            <div class="car-info-item">
+              <span class="ci-label">Sales Executive</span>
+              <span class="ci-value" id="disp-sales-info">Yusuf</span>
+            </div>
+          </div>
+        </div>
+
+        <p class="letter-text">
+          Kami berharap kendaraan <strong id="disp-unit-inline">Suzuki Ertiga</strong> yang Anda miliki dapat menemani setiap perjalanan Anda dengan penuh kenyamanan, keandalan, dan kebanggaan. Setiap kilometer yang Anda tempuh adalah bukti dari standar kualitas Suzuki yang telah kami jaga dengan sepenuh hati.
+        </p>
+
+        <p class="letter-text">
+          Jangan ragu untuk menghubungi kami kapanpun Anda membutuhkan layanan purna jual, perawatan berkala, maupun informasi lebih lanjut. Kami selalu siap memberikan pelayanan terbaik yang Anda layak dapatkan.
+        </p>
+
+        <div class="signature-block">
+          <div class="sig-left">
+            <p class="closing-text">"Terima kasih telah menjadi bagian dari keluarga besar Suzuki.<br>Semoga perjalanan Anda selalu menyenangkan."</p>
+            <p class="sig-closing">Hormat Kami,</p>
+            <p class="sig-name" id="disp-sales-sig">Yusuf</p>
+            <p class="sig-title">Sales Executive — Suzuki Authorized Dealer</p>
+          </div>
+          <div class="sig-right">
+            <div class="seal-ring">
+              <div class="seal-text">SUZUKI<br>⬥<br>AUTHORIZED<br>DEALER<br>⬥<br><span id="disp-sales-seal">YUSUF</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <footer class="letter-footer">
+        <div class="footer-ornament">
+          <div class="divider-line"></div>
+          <div class="divider-ornament">
+            <div class="dot"></div>
+            <div class="dot-lg"></div>
+            <div class="dot"></div>
+          </div>
+          <div class="divider-line"></div>
+        </div>
+        <div class="footer-text">Suzuki — Way of Life &nbsp;⬥&nbsp; Dealer Resmi <span id="disp-sales-footer">Yusuf</span></div>
+      </footer>
+
+    </div>
+  </main>
+</div>
+
+<script>
+  // Set default date to today
+  const today = new Date();
+  document.getElementById('inp-date').value = today.toISOString().split('T')[0];
+  updateLetter();
+
+  function formatDateID(dateStr) {
+    if (!dateStr) return '—';
+    const d = new Date(dateStr + 'T00:00:00');
+    const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+    return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+  }
+
+  function updateLetter() {
+    const name = document.getElementById('inp-name').value || 'Yth. Konsumen';
+    const dateVal = document.getElementById('inp-date').value;
+    const unit = document.getElementById('inp-unit').value;
+    const type = document.getElementById('inp-type').value || '—';
+    const sales = document.getElementById('inp-sales').value || 'Sales Executive';
+    const dateFormatted = formatDateID(dateVal);
+
+    document.getElementById('disp-name').textContent = name;
+    document.getElementById('disp-unit').textContent = unit;
+    document.getElementById('disp-type').textContent = type;
+    document.getElementById('disp-date').textContent = `— ${dateFormatted} —`;
+    document.getElementById('disp-date2').textContent = dateFormatted;
+    document.getElementById('disp-unit-inline').textContent = unit;
+    document.getElementById('disp-sales-header').textContent = sales;
+    document.getElementById('disp-sales-info').textContent = sales;
+    document.getElementById('disp-sales-sig').textContent = sales;
+    document.getElementById('disp-sales-seal').textContent = sales.toUpperCase();
+    document.getElementById('disp-sales-footer').textContent = sales;
+  }
+
+  function downloadPDF() {
+    window.print();
+  }
+</script>
+</body>
+</html>
