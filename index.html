@@ -713,23 +713,30 @@
 
   function downloadPDF() {
     const btn = document.querySelector('.btn-download');
+    
+    // CEK PROTOKOL: Jika dibuka lewat file:/// (klik dua kali tanpa server)
+    if (window.location.protocol === 'file:') {
+      alert("Karena file dibuka tanpa Local Server, browser memblokir unduhan otomatis.\n\nKlik 'OK', lalu pada menu Print yang muncul, ubah Destination/Tujuan menjadi 'Save as PDF' (Simpan sebagai PDF) lalu klik Save.");
+      window.print();
+      return; // Berhenti di sini, gunakan print bawaan browser
+    }
+
     btn.textContent = '⏳  Menyiapkan PDF...';
     btn.disabled = true;
 
     const element = document.getElementById('letter-canvas');
     const name = document.getElementById('inp-name').value || 'Konsumen';
-    
-    // PERBAIKAN: Menghapus spasi dan karakter dilarang OS (\ / : * ? " < > |)
     const safeName = name.replace(/[\s/\\:*?"<>|]+/g, '_');
     const filename = `Suzuki-ThankYou-${safeName}.pdf`;
 
+    // PERBAIKAN: useCORS diubah menjadi false untuk mengurangi error di lokal
     const opt = {
       margin: 0,
       filename: filename,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: {
         scale: 2,
-        useCORS: true,
+        useCORS: false, 
         backgroundColor: '#0a0a0a',
         width: 794,
         windowWidth: 794
@@ -737,15 +744,21 @@
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
-    html2pdf().set(opt).from(element).save().then(() => {
+    try {
+      html2pdf().set(opt).from(element).save().then(() => {
+        btn.innerHTML = '↓ &nbsp; Unduh sebagai PDF';
+        btn.disabled = false;
+      }).catch((err) => {
+        console.warn("Gagal render otomatis, beralih ke Print browser...", err);
+        window.print(); // Fallback jika tetap gagal
+        btn.innerHTML = '↓ &nbsp; Unduh sebagai PDF';
+        btn.disabled = false;
+      });
+    } catch (err) {
+      window.print(); // Fallback jika script html2pdf tidak ter-load internet
       btn.innerHTML = '↓ &nbsp; Unduh sebagai PDF';
       btn.disabled = false;
-    }).catch((error) => {
-      console.error("Terjadi kesalahan:", error);
-      alert("Gagal mengunduh PDF. Pastikan internet Anda aktif dan jalankan di Local Server.");
-      btn.innerHTML = '↓ &nbsp; Coba Lagi';
-      btn.disabled = false;
-    });
+    }
   }
 </script>
 
