@@ -713,14 +713,6 @@
 
   function downloadPDF() {
     const btn = document.querySelector('.btn-download');
-    
-    // CEK PROTOKOL: Jika dibuka lewat file:/// (klik dua kali tanpa server)
-    if (window.location.protocol === 'file:') {
-      alert("Karena file dibuka tanpa Local Server, browser memblokir unduhan otomatis.\n\nKlik 'OK', lalu pada menu Print yang muncul, ubah Destination/Tujuan menjadi 'Save as PDF' (Simpan sebagai PDF) lalu klik Save.");
-      window.print();
-      return; // Berhenti di sini, gunakan print bawaan browser
-    }
-
     btn.textContent = '⏳  Menyiapkan PDF...';
     btn.disabled = true;
 
@@ -729,13 +721,16 @@
     const safeName = name.replace(/[\s/\\:*?"<>|]+/g, '_');
     const filename = `Suzuki-ThankYou-${safeName}.pdf`;
 
-    // PERBAIKAN: useCORS diubah menjadi false untuk mengurangi error di lokal
+    // Cek apakah ini perangkat mobile berdasarkan ukuran layar
+    const isMobile = window.innerWidth <= 768;
+
     const opt = {
       margin: 0,
       filename: filename,
-      image: { type: 'jpeg', quality: 0.98 },
+      // Turunkan kualitas dan skala di HP agar tidak crash/corrupt
+      image: { type: 'jpeg', quality: isMobile ? 0.8 : 0.98 },
       html2canvas: {
-        scale: 2,
+        scale: isMobile ? 1 : 2, 
         useCORS: false, 
         backgroundColor: '#0a0a0a',
         width: 794,
@@ -748,14 +743,17 @@
       html2pdf().set(opt).from(element).save().then(() => {
         btn.innerHTML = '↓ &nbsp; Unduh sebagai PDF';
         btn.disabled = false;
+        if (isMobile) {
+            alert("PDF telah diunduh. Jika masih tidak bisa dibuka, file HTML ini harus dijalankan melalui Laptop/PC.");
+        }
       }).catch((err) => {
-        console.warn("Gagal render otomatis, beralih ke Print browser...", err);
-        window.print(); // Fallback jika tetap gagal
-        btn.innerHTML = '↓ &nbsp; Unduh sebagai PDF';
+        console.warn("Gagal render otomatis:", err);
+        alert("Gagal memproses PDF karena memori HP tidak mencukupi.");
+        btn.innerHTML = '↓ &nbsp; Coba Lagi';
         btn.disabled = false;
       });
     } catch (err) {
-      window.print(); // Fallback jika script html2pdf tidak ter-load internet
+      alert("Browser Anda tidak mendukung fitur ini secara lokal.");
       btn.innerHTML = '↓ &nbsp; Unduh sebagai PDF';
       btn.disabled = false;
     }
