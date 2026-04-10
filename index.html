@@ -279,24 +279,35 @@
   }
   updatePreview();
 
-  async function downloadPerfectPDF() {
+    async function downloadPerfectPDF() {
     const btn = document.getElementById('btn-submit');
     const inputName = document.getElementById('inp-name').value || 'Konsumen';
     const safeName = inputName.replace(/[\s/\\:*?"<>|]+/g, '_');
     
     btn.disabled = true;
-    btn.textContent = '⏳ Memotret Layout (HD)...';
+    btn.textContent = '⏳ Memotret Layout...';
 
     const element = document.getElementById('letter-canvas');
 
+    // 1. DETEKSI PERANGKAT (SMART RESOLUTION)
+    // Jika di HP (lebar layar kecil), gunakan pixelRatio 2 agar RAM tidak jebol.
+    // Jika di Laptop, hajar dengan pixelRatio 4 (Ultra HD).
+    const isMobile = window.innerWidth <= 1024;
+    const rasioKamera = isMobile ? 2 : 4;
+
+    // 2. HAPUS EFEK ZOOM SEMENTARA
+    // Ini rahasia agar hasil di HP tidak berantakan/terpotong.
+    // Kita hapus CSS pengecil layarnya tepat sebelum difoto.
+    const gayaAsli = element.getAttribute('style'); 
+    element.setAttribute('style', 'transform: none !important; zoom: 1 !important; margin: 0 !important;');
+
     try {
-      // Karena font sudah ada di dalam file (lokal), kita tidak perlu menunggu download internet lagi.
-      // Proses konversi gambar bisa langsung jalan!
+      // Ambil foto menggunakan html-to-image
       const dataUrl = await htmlToImage.toJpeg(element, {
         quality: 1.0,
         backgroundColor: '#0a0a0a',
-        pixelRatio: 4, 
-        style: { transform: 'scale(1)', transformOrigin: 'top left' }
+        pixelRatio: rasioKamera, 
+        style: { transform: 'none', zoom: '1' } // Kunci ukuran asli 794x1123
       });
 
       btn.textContent = '⏳ Menyusun PDF...';
@@ -306,12 +317,20 @@
 
     } catch (error) {
       console.error("Gagal membuat PDF:", error);
-      alert("Terjadi kesalahan teknis.");
+      alert("Terjadi kesalahan. Jika memori HP penuh, coba tutup tab lain di browser.");
     } finally {
+      // 3. KEMBALIKAN TAMPILAN HP SEPERTI SEMULA
+      if (gayaAsli) {
+        element.setAttribute('style', gayaAsli);
+      } else {
+        element.removeAttribute('style');
+      }
+      
       btn.disabled = false;
       btn.innerHTML = '↓ &nbsp; Unduh PDF HD';
     }
   }
+
 </script>
 
 </body>
